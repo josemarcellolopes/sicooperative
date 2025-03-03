@@ -20,10 +20,10 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: sicooperative
+      MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: sicooperative
       MYSQL_USER: sicooperative
-      MYSQL_PASSWORD: sicooperative
+      MYSQL_PASSWORD: admin
       MYSQL_ROOT_HOST: "%"
     ports:
       - "3306:3306"
@@ -32,7 +32,109 @@ services:
     networks:
       - sicooperative
 
+  postgres:
+    image: postgres:13
+    container_name: airflow_postgres
+    restart: always
+    networks:
+      - sicooperative
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+    container_name: airflow_redis
+    restart: always
+    networks:
+      - sicooperative
+    ports:
+      - "6379:6379"
+
+  airflow-webserver:
+    image: apache/airflow:2.6.3
+    container_name: airflow_webserver
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - sicooperative
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__WEBSERVER__SECRET_KEY=a3f9c8b2d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2
+      - AIRFLOW__WEBSERVER__RBAC=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+    ports:
+      - "8080:8080"
+    entrypoint: /bin/bash -c "
+      airflow db upgrade &&
+      sleep 5 &&
+      airflow users list | grep -q 'admin' || airflow users create \
+        --username admin \
+        --password admin \
+        --firstname Admin \
+        --lastname User \
+        --role Admin \
+        --email jm.lopes@live.com;
+      exec airflow webserver"
+    volumes:
+      - airflow_logs:/opt/airflow/logs
+      - airflow_dags:/opt/airflow/dags
+      - airflow_plugins:/opt/airflow/plugins
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.3
+    container_name: airflow_scheduler
+    restart: always
+    depends_on:
+      - airflow-webserver
+    networks:
+      - sicooperative
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres:5432/airflow
+    command: scheduler
+    volumes:
+      - airflow_logs:/opt/airflow/logs
+      - airflow_dags:/opt/airflow/dags
+      - airflow_plugins:/opt/airflow/plugins
+
+  airflow-worker:
+    image: apache/airflow:2.6.3
+    container_name: airflow_worker
+    restart: always
+    depends_on:
+      - airflow-scheduler
+    networks:
+      - sicooperative
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres:5432/airflow
+    command: celery worker
+    volumes:
+      - airflow_logs:/opt/airflow/logs
+      - airflow_dags:/opt/airflow/dags
+      - airflow_plugins:/opt/airflow/plugins
+
 volumes:
+  postgres_data:
+  airflow_logs:
+  airflow_dags:
+  airflow_plugins:
   briefer_data:
   briefer_jupyter:
   briefer_home:
