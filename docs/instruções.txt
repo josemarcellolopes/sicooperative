@@ -1,0 +1,16 @@
+pip install pyspark pandas mysql-connector-python sqlalchemy
+
+
+01 - cd .
+
+02 - cd docker
+03 - docker-compose up -d
+
+04 - cd ..
+05 - cd sql
+
+06 - mysql -h 127.0.0.1 -P 3306 -uroot -psicooperative < ddl.sql
+07 - mysql -h 127.0.0.1 -P 3306 -uroot -psicooperative < insert_associados.sql
+08 - mysql -h 127.0.0.1 -P 3306 -uroot -psicooperative < insert_contas.sql
+09 - mysql -h 127.0.0.1 -P 3306 -uroot -psicooperative < insert_cartoes.sql
+10 - mysql -h 127.0.0.1 -P 3306 -uroot -psicooperative < insert_movimentos.sql

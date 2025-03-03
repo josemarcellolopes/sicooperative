@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  briefer:
+    image: briefercloud/briefer
+    container_name: briefer
+    ports:
+      - "3000:3000"
+    volumes:
+      - briefer_data:/var/lib/postgresql/data
+      - briefer_jupyter:/home/jupyteruser
+      - briefer_home:/home/briefer
+    restart: always
+    networks:
+      - sicooperative
+
+  mysql:
+    image: mysql:8.0 
+    container_name: mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: sicooperative
+      MYSQL_DATABASE: sicooperative
+      MYSQL_USER: sicooperative
+      MYSQL_PASSWORD: sicooperative
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - sicooperative
+
+volumes:
+  briefer_data:
+  briefer_jupyter:
+  briefer_home:
+  mysql_data:
+
+networks:
+  sicooperative:
+    driver: bridge
