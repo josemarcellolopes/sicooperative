@@ -26,10 +26,6 @@ SiCooperative/
 
 ## Requisitos
 - **Docker e Docker Compose** (caso deseje rodar o banco via container)
-- **Python 3.8+**
-- **Apache Airflow**
-- **Jupyter Notebook** (para análise de dados opcional)
-- **Banco de Dados MySQL**
 
 ## Instalação e Configuração
 ### 1. Clonando o Repositório
@@ -38,22 +34,7 @@ git clone https://github.com/seu-usuario/SiCooperative.git
 cd SiCooperative
 ```
 
-### 2. Configurando o Banco de Dados
-Caso queira rodar o banco via Docker:
-```bash
-docker-compose up -d
-```
-Ou instale um banco MySQL localmente e configure os scripts SQL na pasta **dags/sql/**.
-
-### 3. Instalando Dependências Python
-Crie um ambiente virtual e instale as dependências:
-```bash
-python -m venv venv
-source venv/bin/activate  # No Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 4. Executando o Sistema
+### 2. Executando o Sistema
 Para iniciar o processamento de dados:
 ```bash
 ./run.sh   # No Windows: run.bat
@@ -66,15 +47,11 @@ airflow webserver --port 8080
 ```
 Acesse no navegador: `http://localhost:8080` e ative as DAGs disponíveis.
 
-## Contribuição
-1. Fork este repositório
-2. Crie uma branch para sua funcionalidade: `git checkout -b minha-feature`
-3. Faça commit das mudanças: `git commit -m 'Adicionando nova feature'`
-4. Envie para o repositório remoto: `git push origin minha-feature`
-5. Abra um Pull Request
+## Bonus
+Instalei uma suite para analise de dados
 
-## Licença
-Este projeto está sob a licença MIT. Para mais detalhes, consulte o arquivo `LICENSE`.
+Acesse no navegador: `http://localhost:3000` e configre.
+
 
 ## Contato
 Caso tenha dúvidas ou sugestões, entre em contato através dos arquivos disponíveis na pasta `docs/`. 
