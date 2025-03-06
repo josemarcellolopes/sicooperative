@@ -53,6 +53,9 @@ airflow webserver --port 8080
 ```
 Acesse no navegador: `http://localhost:8080` e ative as DAGs disponíveis.
 
+Usuário: admin
+Senha: admin
+
 ## Bonus
 Instalei uma suite para analise de dados
 
