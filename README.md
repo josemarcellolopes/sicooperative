@@ -61,6 +61,38 @@ Instalei uma suite para analise de dados
 
 Acesse no navegador: `http://localhost:3000` e configre.
 
+## Algumas analises realizadas
+
+![Tela](screenshots/01.png)
+
+![Tela](screenshots/02.png)
+
+![Tela](screenshots/03.png)
+
+![Tela](screenshots/04.png)
+
+![Tela](screenshots/05.png)
+
+![Tela](screenshots/06.png)
+
+![Tela](screenshots/07.png)
+
+![Tela](screenshots/08.png)
+
+![Tela](screenshots/09.png)
+
+![Tela](screenshots/10.png)
+
+![Tela](screenshots/11.png)
+
+![Tela](screenshots/12.png)
+
+![Tela](screenshots/13.png)
+
+![Tela](screenshots/14.png)
+
+![Tela](screenshots/15.png)
+
 
 ## Contato
 Caso tenha dúvidas ou sugestões, entre em contato através dos arquivos disponíveis na pasta `docs/`. 
