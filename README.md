@@ -9,6 +9,8 @@ Utilizei o banco de dados MySQL para modelar os dados, linguagem python para pro
 
 Não utilizei Spark ou PySpark pois iria demandar mais containers de docker, e considere também que as análises mostradas nos screenshots não estão contempladas no Briefer, mas disponibilizei a platarmos porque achei interessante, ainda mais por se tratar de open source e não gerar custos.
 
+... mas na pasta notebooks/with_spark desenvolvi os .py utilizando o PySpark.
+
 ## Estrutura do Projeto
 
 ```
@@ -54,7 +56,6 @@ airflow webserver --port 8080
 Acesse no navegador: `http://localhost:8080` e ative as DAGs disponíveis.
 
 Usuário: admin
-
 Senha: admin
 
 ## Bonus
