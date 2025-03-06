@@ -1,2 +1,0 @@
-      - ./ddl.sql:/docker-entrypoint-initdb.d/ddl.sql
-    entrypoint: [ "sh", "-c", "sleep 15 && mysql -hmysql_rdbms -uadmin -padmin sicooperative < /docker-entrypoint-initdb.d/ddl.sql" ]
