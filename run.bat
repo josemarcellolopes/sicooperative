@@ -1,13 +1,18 @@
 @echo off
-REM Sobe os containers em background
+echo Iniciando execução...
+echo.
+
+:: Sobe os containers em background
 docker-compose up -d
 
-REM Aguarda alguns segundos para garantir que o MySQL está pronto
+:: Aguarda alguns segundos para garantir que o MySQL está pronto
+echo.
 echo Aguardando o MySQL iniciar...
-timeout /t 60 /nobreak >nul
+timeout /T 60 /NOBREAK >nul
 
-REM Executa o script SQL no banco de dados
-mysql -h127.0.0.1 -uadmin -padmin < .\dags\sql\create_tables.sql
+:: Executa o script SQL no banco de dados
+mysql -h127.0.0.1 -uadmin -padmin < .\dags\sql\create_tables.sql 2> nul
 
-REM Mensagem de conclusão
+:: Mensagem de conclusão
+echo.
 echo Execução concluída!

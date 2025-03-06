@@ -1,6 +1,10 @@
 @echo off
-REM Para os serviços dos containers em background
+echo Finalizando execução...
+echo.
+
+:: Para os serviços dos containers em background
 docker-compose down
 
-REM Mensagem de conclusão
-echo Execução concluída!
+:: Mensagem de conclusão
+echo.
+echo Concluído!
