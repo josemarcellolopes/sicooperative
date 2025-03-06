@@ -3,11 +3,11 @@
 ## Visão Geral
 O **SiCooperative** é um sistema para gestão de cooperativas, focado no processamento de transações financeiras. O projeto inclui scripts de extração, transformação e carga de dados (**ETL**), utilizando arquivos **CSV** e integração com um banco de dados SQL.
 
-Utilizei o banco de dados MySQL para modelar os dados, linguagem python para programação e orquestação com Airflow, gerei dados fake com uma volumetria consideravel, e o metodo de ETL inclui o processamento DELTA (Considerando INSERT, UPDATE e não DELETE por se tratar de uma aplicação financeira), o arquivo esta sendo gerado na pasta output, mas via Airflow em variaveis isto pode ser alterado.
+Utilizei o banco de dados MySQL para modelar os dados, linguagem python para programação e orquestação com Airflow, gerei dados fake com uma volumetria consideravel, e o metodo de ETL inclui o processamento DELTA (Considerando INSERT, UPDATE e não DELETE por se tratar de uma aplicação financeira), o arquivo esta sendo gerado na pasta output mas pode ser alterado no Airflow no menu , mas via Airflow em variaveis isto pode ser alterado.
 
 # Observação
 
-Não utilizei Spark ou PySpark pois ia demandar mais containers de docker.
+Não utilizei Spark ou PySpark pois iria demandar mais containers de docker, e considere também que as análises mostradas nos screenshots não estão contempladas no Briefer, mas disponibilizei a platarmos porque achei interessante, ainda mais por se tratar de open source e não gerar custos.
 
 ## Estrutura do Projeto
 
@@ -54,6 +54,7 @@ airflow webserver --port 8080
 Acesse no navegador: `http://localhost:8080` e ative as DAGs disponíveis.
 
 Usuário: admin
+
 Senha: admin
 
 ## Bonus
@@ -61,7 +62,7 @@ Instalei uma suite para analise de dados
 
 Acesse no navegador: `http://localhost:3000` e configre.
 
-## Algumas analises realizadas
+## Algumas capturas de telas realizadas
 
 ![Tela](screenshots/01.png)
 
