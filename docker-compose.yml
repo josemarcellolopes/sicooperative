@@ -1,0 +1,160 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: airflow_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    networks:
+      - sicooperative
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: airflow_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - sicooperative
+    volumes:
+      - redis_data:/data  # Adicionando persistência ao Redis
+
+  airflow-webserver:
+    image: apache/airflow:2.9.2
+    container_name: airflow_webserver
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres/airflow
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    entrypoint: 
+      - /bin/bash
+      - -c
+      - |
+        airflow db migrate &&
+        airflow users create --username admin \
+                            --firstname Admin \
+                            --lastname User \
+                            --role Admin \
+                            --email admin@example.com \
+                            --password admin &&
+        airflow variables set output '/opt/airflow/dags/output' && 
+        exec airflow webserver
+    networks:
+      - sicooperative
+
+  airflow-scheduler:
+    image: apache/airflow:2.9.2
+    container_name: airflow_scheduler
+    restart: always
+    depends_on:
+      - airflow-webserver
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres/airflow
+    command: scheduler
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - sicooperative
+
+  airflow-worker:
+    image: apache/airflow:2.9.2
+    container_name: airflow_worker
+    restart: always
+    depends_on:
+      - airflow-webserver
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres/airflow
+    command: celery worker
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - sicooperative
+
+  airflow-init:
+    image: apache/airflow:2.9.2
+    container_name: airflow_init
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=CeleryExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CELERY__BROKER_URL=redis://redis:6379/0
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@postgres/airflow
+    command: db init
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - sicooperative
+
+  mysql-rdbms:
+    image: mysql:latest
+    container_name: mysql_rdbms
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: sicooperative
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - sicooperative
+
+  briefer-cloud:
+    image: briefercloud/briefer
+    container_name: briefer_cloud
+    ports:
+      - "3000:3000"
+    volumes:
+      - briefer_data:/var/lib/postgresql/data
+      - briefer_jupyter:/home/jupyteruser
+      - briefer_home:/home/briefer
+    networks:
+      - sicooperative
+
+networks:
+  sicooperative:
+    driver: bridge
+
+volumes:
+  dags:
+  logs:
+  plugins:
+  postgres_data:
+  redis_data:
+  mysql_data:
+  briefer_data:
+  briefer_jupyter:
+  briefer_home:
