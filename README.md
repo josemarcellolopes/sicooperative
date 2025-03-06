@@ -3,6 +3,12 @@
 ## Visão Geral
 O **SiCooperative** é um sistema para gestão de cooperativas, focado no processamento de transações financeiras. O projeto inclui scripts de extração, transformação e carga de dados (**ETL**), utilizando arquivos **CSV** e integração com um banco de dados SQL.
 
+Utilizei o banco de dados MySQL para modelar os dados, linguagem python para programação e orquestação com Airflow, gerei dados fake com uma volumetria consideravel, e o metodo de ETL inclui o processamento DELTA (Considerando INSERT, UPDATE e não DELETE por se tratar de uma aplicação financeira), o arquivo esta sendo gerado na pasta output, mas via Airflow em variaveis isto pode ser alterado.
+
+# Observação
+
+Não utilizei Spark ou PySpark pois ia demandar mais containers de docker.
+
 ## Estrutura do Projeto
 
 ```
